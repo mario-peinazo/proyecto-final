@@ -13,19 +13,15 @@ import {
   MenuInferior,
 } from "./Menu.styles";
 import { NavLink } from "react-router-dom";
-import InicioSesion from "../InicioSesion/InicioSesion";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Menu = () => {
 
-  const [verPopUp, setVerPopUp] = useState(false)
-
-  const changePadre = param => setVerPopUp(param);
+  const navigate = useNavigate();
 
   return (
     <>
-    <InicioSesion visiblePopUp={verPopUp} onSomeEvent={changePadre}/>  
-
     <FondoMenu>
       <MenuSuperior>
         <BtnRRSS>
@@ -40,14 +36,14 @@ const Menu = () => {
           <BtnMenu>
             <Img src={search} alt="botón search" />
           </BtnMenu>
-          <BtnMenu onClick={() => setVerPopUp(true)}>
+          <BtnMenu onClick={() => navigate('/inicio-sesion')}>
             <Img src={signIn} alt="botón sign in" />
           </BtnMenu>
         </CajaSearchLog>
       </MenuSuperior>
 
       <MenuInferior>
-        <NavLink to="/">BIENVENIDA</NavLink>
+        <NavLink to="/">BIENVENID@</NavLink>
         <NavLink to="/lista-naves">LISTA NAVES</NavLink>
       </MenuInferior>
     </FondoMenu>

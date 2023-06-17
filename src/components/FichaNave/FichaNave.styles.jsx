@@ -1,7 +1,15 @@
 import styled from "styled-components";
 
+export const ComponenteNave = styled.div`
+margin: 60px 120px 100px 120px;
+`;
+
+export const MasInfo = styled.div`
+display:flex;
+gap: 60px;
+`;
+
 export const FichaSuperior = styled.div`
-  margin: 60px 120px;
   display: flex;
   background-color: #1d1e1f;
   border-radius: 5px;
@@ -24,9 +32,8 @@ height: 450px;
 
 export const FichaInferior = styled.div`
 display: flex;
-padding: 0px 120px;
 gap: 100px;
-margin-bottom: 60px
+margin: 60px 0px;
 `;
 
 export const BordeL = styled.div`

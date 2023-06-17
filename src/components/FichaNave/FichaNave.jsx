@@ -2,7 +2,17 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import noPicture from "../../assets/noPicture.png";
-import { FichaSuperior, DatosPrincipal, ImgNave, FichaInferior, BordeL } from "./FichaNave.styles";
+import {
+  FichaSuperior,
+  DatosPrincipal,
+  ImgNave,
+  FichaInferior,
+  BordeL,
+  ComponenteNave,
+  MasInfo
+} from "./FichaNave.styles";
+import Pilotos from "../Pilotos/Pilotos";
+import Peliculas from "../Peliculas/Peliculas";
 
 const FichaNave = () => {
   const { id } = useParams();
@@ -23,7 +33,7 @@ const FichaNave = () => {
   }, [id]);
 
   return (
-    <>
+    <ComponenteNave>
       <FichaSuperior>
         <ImgNave img={img} />
 
@@ -43,16 +53,21 @@ const FichaNave = () => {
           <p>CARGO CAPACITY: {datosNave.cargo_capacity}</p>
         </div>
         <BordeL>
-        <p>CONSUMABLES: {datosNave.consumables}</p>
+          <p>CONSUMABLES: {datosNave.consumables}</p>
           <p>LENGTH: {datosNave["length"]}</p>
           <p>MAXIMUM ATMOSPHERING SPEED: {datosNave.max_atmosphering_speed}</p>
         </BordeL>
         <BordeL>
-        <p>HYPERDRIVE RATING: {datosNave.hyperdrive_rating}</p>
+          <p>HYPERDRIVE RATING: {datosNave.hyperdrive_rating}</p>
           <p>MGLT: {datosNave.MGLT}</p>
         </BordeL>
       </FichaInferior>
-    </>
+
+      <MasInfo>
+        <Pilotos id={id} />
+        <Peliculas id={id} />
+      </MasInfo>
+    </ComponenteNave>
   );
 };
 

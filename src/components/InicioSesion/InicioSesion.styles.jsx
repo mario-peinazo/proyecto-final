@@ -8,6 +8,12 @@ display: ${props => props.visible ? "flex" : "none"};
 margin-right: 30px;
 `;
 
+export const CajaCerrar = styled.div `
+margin-right: 30px;
+display: flex;
+flex-direction: column;
+`;
+
 export const PopUp = styled.div `
 z-index:100;
 position: absolute;
@@ -18,7 +24,7 @@ position: absolute;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center
 `;
 
 export const FondoPopUp = styled.div `
@@ -72,17 +78,12 @@ width: 200px;
 margin: 10px 30px 20px 0px;
 `
 
-export const Form = styled.form `
-display: flex;
-flex-direction: column;
-align-items: center;
-`
-
 export const BtnCerrar = styled.button `
 background-color: transparent;
 border: none;
 font-size: 2rem;
 color: #484848;
+align-self: end;
 &:hover {
     color: white;
 }

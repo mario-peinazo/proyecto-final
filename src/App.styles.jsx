@@ -24,4 +24,19 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1.2rem;
     color: white;
     }
+
+    p {
+        color: #b5b7b7;
+        &:hover {
+            color: #b5b7b7;
+        }
+    }
+
+    h4 {
+        color: rgb(181, 183, 183);
+        font-weight: 400;
+        &:hover {
+            color: rgb(181, 183, 183);
+         }
+    }
 `;
