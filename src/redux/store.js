@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlide";
+import carritoReducer from "./carritoSlide";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    carrito: carritoReducer,
   },
 });

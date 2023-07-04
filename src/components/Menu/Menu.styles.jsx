@@ -1,66 +1,53 @@
 import styled from "styled-components";
 
+
 export const FondoMenu = styled.div`
-  max-width: 100vw;
-  height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 26px 100px;
-  border-bottom: 0.2px solid white;
-`;
-
-export const MenuSuperior = styled.div`
-  min-width: 100%;
+  height: 90px;
+  position: absolute;
+  width: 100vw;
+  background-color: #ffef5f;
+  border-bottom: 10px solid white;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  top: 0;
+  left: 0;
+  margin: auto;
+
+  @media (max-width: 830px) {
+    height: 80px;
+  }
 `;
 
-export const MenuInferior = styled.div`
-  min-width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  padding-left: 14px;
+export const ImgLogo = styled.img`
+  height: 60px;
+  margin-left: 20px;
+
+  @media (max-width: 830px) {
+    height: 40px;
+    margin-left: 10px;
+  }
 `;
 
-export const BtnRRSS = styled.button`
-  width: 234px;
-  height: fit-content;
-  padding: 0px;
-  margin-top: 20px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
+export const BotonMenu = styled.button`
+  padding: 0px 15px;
+
+  img {
+    height: 40px;
+  }
+
+  @media (max-width: 830px) {
+    padding: 0px 10px;
+    img {
+      height: 30px;
+    }
+  }
 `;
 
-export const BtnMenu = styled.button`
-  width: 95px;
-  height: fit-content;
-  padding: 0px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-`;
+export const CajaBotones = styled.div`
+  margin-right: 20px;
 
-export const CajaSearchLog = styled.div`
-  width: 210px;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-`;
-
-export const BtnLogo = styled.button`
-  width: 200px;
-  height: fit-content;
-  padding: 0px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-`;
-
-export const Img = styled.img`
-  object-fit: contain;
-  width: 100%;
-  height: 100%;
+  @media (max-width: 830px) {
+    margin-right: 10px;
+  }
 `;

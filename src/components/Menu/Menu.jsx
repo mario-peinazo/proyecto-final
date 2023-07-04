@@ -1,52 +1,47 @@
-import logoSW from "../../assets/logoSW.png";
-import rrss from "../../assets/rrss.png";
-import search from "../../assets/search.png";
-import signIn from "../../assets/signIn.png";
-import {
-  FondoMenu,
-  BtnMenu,
-  Img,
-  BtnRRSS,
-  BtnLogo,
-  CajaSearchLog,
-  MenuSuperior,
-  MenuInferior,
-} from "./Menu.styles";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { FondoMenu, ImgLogo, BotonMenu, CajaBotones } from "./Menu.styles";
+import logoGrandeHibride from "../../assets/imagenes/logoGrandeHibride.png";
+import carrito from "../../assets/imagenes/carrito.png";
+import usuarie from "../../assets/imagenes/usuario.png";
+import sorpresa from "../../assets/imagenes/sorpresa.png"
+import { useNavigate, Link } from "react-router-dom";
+import Carrito from "../Carrito/Carrito";
+import { estadoCarrito, gatitosSorpresa } from "../../redux/carritoSlide"
+import {useSelector, useDispatch } from "react-redux";
+import Gatetes from "../Gatetes/Gatetes";
 
 
 const Menu = () => {
 
+  const dispatch = useDispatch();
+  const verGatitos = useSelector((state) => state.carrito.gatitos);
+  const verCarrito = useSelector((state) => state.carrito.verCarrito);
+
   const navigate = useNavigate();
+  const pulsadoUsu = () => {
+    navigate("/espacio-personal");
+  };
 
   return (
     <>
-    <FondoMenu>
-      <MenuSuperior>
-        <BtnRRSS>
-          <Img src={rrss} alt="botones redes sociales" />
-        </BtnRRSS>
+      <Carrito />
+      <Gatetes/>
 
-        <BtnLogo>
-          <Img src={logoSW} alt="logo Star Wars" />
-        </BtnLogo>
-
-        <CajaSearchLog>
-          <BtnMenu>
-            <Img src={search} alt="botón search" />
-          </BtnMenu>
-          <BtnMenu onClick={() => navigate('/inicio-sesion')}>
-            <Img src={signIn} alt="botón sign in" />
-          </BtnMenu>
-        </CajaSearchLog>
-      </MenuSuperior>
-
-      <MenuInferior>
-        <NavLink to="/">BIENVENID@</NavLink>
-        <NavLink to="/lista-naves">LISTA NAVES</NavLink>
-      </MenuInferior>
-    </FondoMenu>
+      <FondoMenu>
+        <Link to="/" onClick={() => dispatch(estadoCarrito(false))}>
+          <ImgLogo src={logoGrandeHibride} alt="logo HíBRIDE" />
+        </Link>
+        <CajaBotones>
+        <BotonMenu onClick={() => dispatch(gatitosSorpresa(!verGatitos))}>
+            <img src={sorpresa} alt="botón sorpresa" />
+          </BotonMenu>
+          <BotonMenu onClick={() => dispatch(estadoCarrito(!verCarrito))}>
+            <img src={carrito} alt="botón carrito" />
+          </BotonMenu>
+          <BotonMenu onClick={() => {pulsadoUsu(); dispatch(estadoCarrito(false))}}>
+            <img src={usuarie} alt="botón espacio personal" />
+          </BotonMenu>
+        </CajaBotones>
+      </FondoMenu>
     </>
   );
 };

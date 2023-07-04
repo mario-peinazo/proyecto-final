@@ -1,203 +1,229 @@
-import useLocalStorage from "../../useLocalStorage";
-import { useState, useEffect } from "react";
 import {
-  Caja,
-  CajaCerrar,
-  PopUp,
-  FondoPopUp,
+  FondoInicio,
+  CajaInicio,
+  CajaRegistro,
+  CajaSelec,
   BtnForm,
-  InputForm,
-  Titulo,
-  LogoImg,
-  BtnCerrar,
-} from "./InicioSesion.styles";
-import LogoSW from "../../assets/LogoSW.png";
-import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../redux/userSlide";
+  CajaBtn,
+} from "./inicioSesion.style";
+import { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import {useSelector} from 'react-redux';
+import { auth, db } from "../../application/firebase";
 
 const InicioSesion = () => {
-  const [usuarias, setUsuarias] = useLocalStorage("usuarias", [
-    {
-      email: "mario.peinazo@gmail.com",
-      contraseña: "12345mario",
-    },
-  ]);
-
-  const [user, setUser] = useLocalStorage("usuaria", [
-    {},
-  ]);
-
+  const [pecho, setPecho] = useState("");
+  const [cintura, setCintura] = useState("");
+  const [altura, setAltura] = useState("");
   const [email, setEmail] = useState("");
   const [contraseña, setContraseña] = useState("");
-  const [indice, setIndice] = useState(0);
 
+  const [verIni, setVerIni] = useState(false);
   const [verRegistro, setVerRegistro] = useState(false);
-  const [verLog, setVerLog] = useState(false);
-  const [verEmail, setVerEmail] = useState(true);
-  const [paso2, setPaso2] = useState(false);
-  const [verCerrar, setVerCerrar] = useLocalStorage("cerrar sesion", false);
-  const [visiblePopUp, setVisiblePopUp] = useState(true);
+  const [verSig, setVerSig] = useState(false);
+
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
+  const carrito = useSelector((state) => state.carrito.carrito);
 
-  useEffect(() => {
-    dispatch(addUser(user));
-  }, [user, dispatch]);
+  async function registrarUser(datos) {
+    const infoUsuarie = await createUserWithEmailAndPassword(
+      auth,
+      datos.email,
+      datos.contraseña
+    ).then((usuarioFirebase) => {
+      return usuarioFirebase;
+    });
 
-  const handleSubmitEmail = (e) => {
+    const docuRef = doc(db, `usuaries/${infoUsuarie.user.uid}`);
+    setDoc(docuRef, {
+      id:infoUsuarie.user.uid,
+      email: datos.email,
+      pecho: datos.pecho,
+      cintura: datos.cintura,
+      altura: datos.altura,
+      nombre: "",
+      apellidos: "",
+      movil: "",
+      direccion: "",
+      cp: "",
+      ciudad: "",
+    });
+  }
+
+  const submitHandlerLog = (e) => {
     e.preventDefault();
-    setIndice(usuarias.findIndex((d) => d.email === email));
-    setPaso2(true);
-  };
 
-  const cerrarSesion = () => {
-    setUser({ email: "", contraseña: "" });
-    setVerEmail(true);
-    setVerCerrar(false);
-    setVisiblePopUp(false);
-    navigate("/");
-  };
+    signOut(auth);
 
-  const handleSubmitRegistro = (e) => {
-    e.preventDefault();
-
-    createNewData(email, contraseña);
-    setUser({
+    registrarUser({
+      pecho: pecho,
+      cintura: cintura,
+      altura: altura,
       email: email,
       contraseña: contraseña,
     });
-    setVerRegistro(false);
 
-    alert(`Nueva usuaria, email: ${email} - contraseña: ${contraseña}`);
-
-    setVerCerrar(true);
-    setVisiblePopUp(false);
-    navigate("/");
+    carrito.length > 1 ? navigate("/") : navigate("/finalizar-compra")
   };
 
-  const handleSubmitInicio = (e) => {
-    if (usuarias[indice].contraseña == contraseña) {
-      e.preventDefault();
+  const submitHandlerSign = (e) => {
+    e.preventDefault();
 
-      setUser({
-        email: email,
-        contraseña: contraseña,
-      });
+    signInWithEmailAndPassword(auth, email, contraseña);
 
-      setVerLog(false);
-      setVisiblePopUp(false);
-      setVerCerrar(true);
-
-      alert("Sesión iniciada");
-
-      navigate("/");
-    } else {
-      e.preventDefault();
-      alert("La contraseña no coincide con la asociada a este email");
-    }
+    carrito.length < 1 ? navigate("/") : navigate("/finalizar-compra")
   };
-
-  useEffect(() => {
-    if (paso2) {
-      setVerEmail(false);
-      if (indice == -1) {
-        setVerRegistro(true);
-        setVerLog(false);
-        console.log("Email no registrado, paso al proceso de registro");
-      } else {
-        setVerLog(true);
-        setVerRegistro(false);
-        console.log("Email registrado, paso al proceso de inicio de sesión");
-      }
-    }
-  }, [paso2, indice]);
-
-
-  function createNewData(email, contraseña) {
-    setUsuarias([
-      ...usuarias,
-      {
-        email: email,
-        contraseña: contraseña,
-      },
-    ]);
-  }
 
   return (
-    <FondoPopUp visible={visiblePopUp}>
-      <PopUp>
-        <BtnCerrar
+    <FondoInicio>
+      <CajaSelec visible={verRegistro || verIni ? false : true}>
+        <div>
+          <h2>
+            📏 <u>Si es tu primera vez:</u>
+          </h2>
+          <BtnForm onClick={() => setVerRegistro(true)}>Añadir medidas</BtnForm>
+          <h2>
+            🗝 <u>Si ya tienes una cuenta creada:</u>
+          </h2>
+          <BtnForm onClick={() => setVerIni(true)}>Iniciar Sesión</BtnForm>
+        </div>
+      </CajaSelec>
+
+      <CajaRegistro visible={verRegistro}>
+        <h1>Registrarse</h1>
+
+        <form>
+          {verSig ? (
+            <div>
+              <label name="email">
+                {"Email:"}
+                <input
+                  type="email"
+                  value={email}
+                  placeholder="hola.hibride@gmail.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </label>
+              <label name="password">
+                {"Contraseña:"}
+                <input
+                  type="password"
+                  value={contraseña}
+                  placeholder="12345holi"
+                  onChange={(e) => setContraseña(e.target.value)}
+                />
+              </label>
+            </div>
+          ) : (
+            <div>
+              <label name="pecho">
+                {"Medida pecho:"}
+                <input
+                  type="number"
+                  value={pecho}
+                  placeholder="100"
+                  onChange={(e) => setPecho(e.target.value)}
+                />
+              </label>
+              <label name="cintura">
+                {"Medida cintura:"}
+                <input
+                  type="number"
+                  value={cintura}
+                  placeholder="100"
+                  onChange={(e) => setCintura(e.target.value)}
+                />
+              </label>
+              <label name="altura">
+                {"Medida altura:"}
+                <input
+                  type="number"
+                  value={altura}
+                  placeholder="100"
+                  onChange={(e) => setAltura(e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+
+          {verSig ? (
+            <CajaBtn>
+              <BtnForm
+                onClick={(e) => {
+                  e.preventDefault();
+                  setVerSig(false);
+                }}
+              >
+                Atrás
+              </BtnForm>{" "}
+              <BtnForm onClick={submitHandlerLog}>Registrarse</BtnForm>
+            </CajaBtn>
+          ) : (
+            <BtnForm
+              onClick={(e) => {
+                e.preventDefault();
+                setVerSig(true);
+              }}
+            >
+              Siguiente
+            </BtnForm>
+          )}
+        </form>
+
+        <a
           onClick={() => {
-            setVisiblePopUp(false);
-            navigate("/");
+            setVerIni(true);
+            setVerRegistro(false);
           }}
         >
-          X
-        </BtnCerrar>
+          ¿Ya tienes una cuenta?
+        </a>
+      </CajaRegistro>
 
-        <LogoImg src={LogoSW} alt="Logo StarWars" />
+      <CajaInicio visible={verIni}>
+        <h1>Inicio sesión</h1>
 
-        {verCerrar != true ? (
-          <form>
-            <Caja visible={verEmail}>
-              <Titulo>Introduce tu email</Titulo>
-              <InputForm
-                type="text"
-                className="inputForm"
-                value={email}
-                placeholder="mario.peinazo@gmail.com"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <BtnForm type="submit" onClick={handleSubmitEmail}>
-                Introducir email
-              </BtnForm>
-            </Caja>
+        <form onSubmit={submitHandlerSign}>
+          <label name="email">
+            {"Email:"}
+            <input
+              type="email"
+              value={email}
+              placeholder="hola.hibride@gmail.com"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <label name="password">
+            {"Contraseña:"}
+            <input
+              type="password"
+              value={contraseña}
+              placeholder="12345holi"
+              onChange={(e) => setContraseña(e.target.value)}
+            />
+          </label>
 
-            <Caja visible={verLog}>
-              <Titulo>Introduce tu contraseña</Titulo>
-              <InputForm
-                type="text"
-                className="inputForm"
-                value={contraseña}
-                placeholder="12345mario"
-                onChange={(e) => setContraseña(e.target.value)}
-              />
-              <BtnForm type="submit" onClick={handleSubmitInicio}>
-                Iniciar Sesión
-              </BtnForm>
-            </Caja>
+          <BtnForm type="submit">Iniciar sesión</BtnForm>
+        </form>
 
-            <Caja visible={verRegistro}>
-              <Titulo>Añade una contraseña</Titulo>
-              <InputForm
-                type="text"
-                className="inputForm"
-                value={contraseña}
-                placeholder="12345mario"
-                onChange={(e) => setContraseña(e.target.value)}
-              />
-              <BtnForm type="submit" onClick={handleSubmitRegistro}>
-                Registrarse
-              </BtnForm>
-            </Caja>
-          </form>
-        ) : (
-          <CajaCerrar>
-            <Titulo>Cerrar sesion</Titulo>
-            <BtnForm onClick={cerrarSesion}>Cerrar Sesion</BtnForm>
-          </CajaCerrar>
-        )}
-      </PopUp>
-    </FondoPopUp>
+        <a
+          onClick={() => {
+            setVerIni(false);
+            setVerRegistro(true);
+          }}
+        >
+          ¿Aún no tienes una cuenta?
+        </a>
+      </CajaInicio>
+    </FondoInicio>
   );
-};
-
-InicioSesion.propTypes = {
-  onSomeEvent: PropTypes.func,
-  visiblePopUp: PropTypes.bool,
 };
 
 export default InicioSesion;
